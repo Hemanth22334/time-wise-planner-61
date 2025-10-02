@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface TaskFormProps {
-  onAddTask: (title: string, timeInMinutes: number) => void;
+  onAddTask: (title: string, timeInMinutes: number, firstPrinciples?: string, steps?: string[]) => void;
 }
 
 export const TaskForm = ({ onAddTask }: TaskFormProps) => {
@@ -45,12 +45,14 @@ export const TaskForm = ({ onAddTask }: TaskFormProps) => {
       }
 
       const estimatedMinutes = data.minutes;
+      const firstPrinciples = data.firstPrinciples || "";
+      const steps = data.steps || [];
       const hours = Math.floor(estimatedMinutes / 60);
       const minutes = estimatedMinutes % 60;
       const timeDisplay = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
       
-      onAddTask(title.trim(), estimatedMinutes);
-      toast.success(`Task added! Estimated time: ${timeDisplay}`);
+      onAddTask(title.trim(), estimatedMinutes, firstPrinciples, steps);
+      toast.success(`Task analyzed! Estimated time: ${timeDisplay}`);
       setTitle("");
     } catch (err) {
       console.error("Unexpected error:", err);

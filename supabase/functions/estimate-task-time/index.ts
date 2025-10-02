@@ -29,23 +29,23 @@ serve(async (req) => {
       );
     }
 
-    const systemPrompt = `You are a time estimation expert. Analyze the task description and provide a realistic time estimate in minutes.
+    const systemPrompt = `You are a productivity expert specializing in first principles thinking and task breakdown.
 
-Consider these factors:
-- Task complexity and scope
-- Typical time needed for similar tasks
-- Include buffer time for unexpected issues
-- Be realistic but not overly pessimistic
+Analyze the given task using first principles methodology:
+1. Break down to fundamental truths
+2. Estimate realistic time needed
+3. Create actionable step-by-step plan
 
 Respond ONLY with a JSON object in this exact format (no markdown, no extra text):
-{"minutes": <number>}
+{
+  "minutes": <number>,
+  "firstPrinciples": "<brief analysis of core fundamentals - 1-2 sentences>",
+  "steps": ["step 1", "step 2", "step 3", ...]
+}
 
-Examples:
-- "Write a blog post" -> {"minutes": 90}
-- "Reply to emails" -> {"minutes": 30}
-- "Complete project proposal" -> {"minutes": 180}
-- "Quick meeting" -> {"minutes": 15}
-- "Learn React basics" -> {"minutes": 240}`;
+Example:
+Task: "Write a blog post about productivity"
+Response: {"minutes": 90, "firstPrinciples": "Writing requires research, organizing thoughts, drafting content, and editing. Quality content needs focused time for each phase.", "steps": ["Research topic and gather sources (20 min)", "Create outline and structure (15 min)", "Write first draft (40 min)", "Edit and refine content (15 min)"]}`;
 
     console.log("Analyzing task:", taskTitle);
 
@@ -103,14 +103,19 @@ Examples:
 
     // Parse the JSON response from AI
     let estimatedMinutes: number;
+    let firstPrinciples: string = "";
+    let steps: string[] = [];
+    
     try {
       // Try to extract JSON from the response
-      const jsonMatch = aiResponse.match(/\{[^}]+\}/);
+      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No JSON found in response");
       }
       const parsed = JSON.parse(jsonMatch[0]);
       estimatedMinutes = parseInt(parsed.minutes);
+      firstPrinciples = parsed.firstPrinciples || "";
+      steps = parsed.steps || [];
       
       if (isNaN(estimatedMinutes) || estimatedMinutes <= 0) {
         throw new Error("Invalid minutes value");
@@ -125,12 +130,18 @@ Examples:
       // Fallback: estimate based on task length
       const wordCount = taskTitle.trim().split(/\s+/).length;
       estimatedMinutes = Math.max(15, Math.min(60, wordCount * 10));
+      firstPrinciples = "Based on task complexity estimation";
+      steps = ["Complete the task"];
     }
 
     console.log("Estimated time:", estimatedMinutes, "minutes");
 
     return new Response(
-      JSON.stringify({ minutes: estimatedMinutes }),
+      JSON.stringify({ 
+        minutes: estimatedMinutes,
+        firstPrinciples,
+        steps
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 

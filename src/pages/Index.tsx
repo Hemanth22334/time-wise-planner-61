@@ -14,6 +14,8 @@ interface Task {
   title: string;
   timeInMinutes: number;
   completed: boolean;
+  firstPrinciples?: string;
+  steps?: string[];
 }
 
 const Index = () => {
@@ -36,12 +38,14 @@ const Index = () => {
     localStorage.setItem("flowtime-tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const handleAddTask = (title: string, timeInMinutes: number) => {
+  const handleAddTask = (title: string, timeInMinutes: number, firstPrinciples?: string, steps?: string[]) => {
     const newTask: Task = {
       id: crypto.randomUUID(),
       title,
       timeInMinutes,
       completed: false,
+      firstPrinciples,
+      steps,
     };
     setTasks([...tasks, newTask]);
     toast.success("Task added successfully!");
