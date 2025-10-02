@@ -30,7 +30,7 @@ export const TaskForm = ({ onAddTask }: TaskFormProps) => {
   };
 
   return (
-    <Card className="p-6 shadow-lg border-2 border-border">
+    <Card className="p-6 shadow-lg border-2 border-border hover:shadow-xl transition-all duration-300 backdrop-blur-sm bg-card/80">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="task-title" className="text-sm font-medium">
@@ -75,7 +75,7 @@ export const TaskForm = ({ onAddTask }: TaskFormProps) => {
 
         <Button 
           type="submit" 
-          className="w-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl bg-gradient-to-r from-primary to-accent"
           size="lg"
         >
           <Plus className="h-4 w-4 mr-2" />

@@ -46,10 +46,13 @@ export const TaskStats = ({ totalTasks, completedTasks, totalTimeMinutes, remain
         return (
           <Card 
             key={index} 
-            className="p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2 border-border"
+            className="p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 border-2 border-border backdrop-blur-sm bg-card/80 group overflow-hidden relative"
           >
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-full bg-secondary ${stat.color}`}>
+            {/* Animated background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            <div className="flex items-center gap-4 relative z-10">
+              <div className={`p-3 rounded-full bg-gradient-to-br from-secondary to-secondary/50 ${stat.color} shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110`}>
                 <Icon className="h-5 w-5" />
               </div>
               <div>

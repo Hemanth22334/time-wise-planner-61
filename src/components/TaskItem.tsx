@@ -20,18 +20,23 @@ export const TaskItem = ({ id, title, timeInMinutes, completed, onToggle, onDele
   return (
     <Card 
       className={cn(
-        "p-4 transition-all duration-300 hover:shadow-lg border-2",
-        completed ? "opacity-60 bg-muted/50 border-muted" : "border-border hover:border-primary/30"
+        "p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-2 group backdrop-blur-sm",
+        completed 
+          ? "opacity-60 bg-muted/50 border-muted" 
+          : "border-border hover:border-primary/30 hover:shadow-primary/10"
       )}
     >
       <div className="flex items-center gap-3">
         <Button
           variant={completed ? "secondary" : "default"}
           size="icon"
-          className="shrink-0 rounded-full transition-all duration-300"
+          className={cn(
+            "shrink-0 rounded-full transition-all duration-300 hover:scale-110 active:scale-95",
+            completed ? "bg-green-500 hover:bg-green-600" : "shadow-lg hover:shadow-xl"
+          )}
           onClick={() => onToggle(id)}
         >
-          {completed && <Check className="h-4 w-4" />}
+          {completed && <Check className="h-4 w-4 animate-scale-in" />}
         </Button>
         
         <div className="flex-1 min-w-0">
@@ -45,7 +50,7 @@ export const TaskItem = ({ id, title, timeInMinutes, completed, onToggle, onDele
 
         <div className="flex items-center gap-2 shrink-0">
           <div className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground",
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground backdrop-blur-sm border border-border/50 transition-all duration-300 group-hover:shadow-md",
             completed && "opacity-60"
           )}>
             <Clock className="h-3.5 w-3.5" />
@@ -55,7 +60,7 @@ export const TaskItem = ({ id, title, timeInMinutes, completed, onToggle, onDele
           <Button
             variant="ghost"
             size="icon"
-            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-300 hover:scale-110 active:scale-95"
             onClick={() => onDelete(id)}
           >
             <Trash2 className="h-4 w-4" />
