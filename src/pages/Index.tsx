@@ -4,6 +4,8 @@ import { TaskItem } from "@/components/TaskItem";
 import { TaskStats } from "@/components/TaskStats";
 import { TaskChart } from "@/components/TaskChart";
 import { Navbar } from "@/components/Navbar";
+import { MotivationalBackground } from "@/components/MotivationalBackground";
+import { MotivationalQuote } from "@/components/MotivationalQuote";
 import { toast } from "sonner";
 import { CalendarCheck2 } from "lucide-react";
 
@@ -67,14 +69,9 @@ const Index = () => {
   const completedTasks = tasks.filter(task => task.completed).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+    <div className="min-h-screen relative">
+      <MotivationalBackground />
       <Navbar />
-      
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-glow-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-glow-pulse" style={{ animationDelay: '1s' }} />
-      </div>
       
       <div className="container max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <header className="mb-8 animate-fade-in-up">
@@ -87,6 +84,10 @@ const Index = () => {
         </header>
 
         <div className="space-y-8">
+          <div className="animate-fade-in">
+            <MotivationalQuote />
+          </div>
+
           <div className="animate-slide-in-right">
             <TaskStats
               totalTasks={tasks.length}

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
+import { MotivationalBackground } from "@/components/MotivationalBackground";
 import { Clock, TrendingUp, Target, Zap } from "lucide-react";
 
 interface Task {
@@ -93,13 +94,9 @@ const Analytics = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+    <div className="min-h-screen relative">
+      <MotivationalBackground />
       <Navbar />
-      
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-glow-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-glow-pulse" style={{ animationDelay: '1s' }} />
-      </div>
 
       <div className="container max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <header className="mb-8 animate-fade-in-up">
