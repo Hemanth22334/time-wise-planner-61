@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Flame, Trophy, Calendar } from "lucide-react";
+import { Flame, Trophy, Calendar, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface StreakData {
   currentStreak: number;
   longestStreak: number;
   lastActivityDate: string;
   totalDays: number;
+  activeDates: string[]; // Array of ISO date strings
 }
 
 export const StreakTracker = () => {
@@ -16,6 +18,7 @@ export const StreakTracker = () => {
     longestStreak: 0,
     lastActivityDate: "",
     totalDays: 0,
+    activeDates: [],
   });
 
   useEffect(() => {
@@ -88,11 +91,18 @@ export const StreakTracker = () => {
       newCurrentStreak = data.currentStreak + 1;
     }
 
+    const todayISO = new Date().toISOString().split('T')[0];
+    const activeDates = [...(data.activeDates || [])];
+    if (!activeDates.includes(todayISO)) {
+      activeDates.push(todayISO);
+    }
+
     const newData: StreakData = {
       currentStreak: newCurrentStreak,
       longestStreak: Math.max(newCurrentStreak, data.longestStreak),
       lastActivityDate: new Date().toISOString(),
       totalDays: data.totalDays + 1,
+      activeDates,
     };
 
     localStorage.setItem("flowtime-streaks", JSON.stringify(newData));
@@ -109,6 +119,25 @@ export const StreakTracker = () => {
     if (streakData.currentStreak >= 7) return "🔥🔥";
     if (streakData.currentStreak >= 3) return "🔥";
     return "✨";
+  };
+
+  const getLast7Days = () => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      days.push(date);
+    }
+    return days;
+  };
+
+  const isDateActive = (date: Date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return streakData.activeDates.includes(dateStr);
+  };
+
+  const getDayLabel = (date: Date) => {
+    return date.toLocaleDateString('en-US', { weekday: 'short' })[0];
   };
 
   return (
@@ -148,13 +177,39 @@ export const StreakTracker = () => {
           </div>
         </div>
 
-        <div className="pt-4 border-t border-border/50">
+        <div className="pt-4 border-t border-border/50 space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-1 text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              Total Active Days
+              Last 7 Days
             </span>
-            <Badge variant="secondary">{streakData.totalDays}</Badge>
+            <Badge variant="secondary">{streakData.totalDays} total</Badge>
+          </div>
+          
+          <div className="flex justify-between gap-1">
+            {getLast7Days().map((date, index) => {
+              const isActive = isDateActive(date);
+              const isToday = date.toDateString() === new Date().toDateString();
+              
+              return (
+                <div key={index} className="flex flex-col items-center gap-1">
+                  <span className="text-xs text-muted-foreground">
+                    {getDayLabel(date)}
+                  </span>
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
+                      isActive
+                        ? "bg-orange-500 text-white shadow-lg"
+                        : "bg-secondary/50",
+                      isToday && "ring-2 ring-primary ring-offset-2"
+                    )}
+                  >
+                    {isActive && <Check className="h-4 w-4" />}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
