@@ -48,6 +48,8 @@ export const TimeAllocation = ({ tasks }: TimeAllocationProps) => {
   const [selectedTask, setSelectedTask] = useState<string>("");
   const [selectedHour, setSelectedHour] = useState<string>("9");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editingTask, setEditingTask] = useState<ScheduledTask | null>(null);
 
   const currentHour = new Date().getHours();
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -84,6 +86,36 @@ export const TimeAllocation = ({ tasks }: TimeAllocationProps) => {
   const removeScheduledTask = (taskId: string, startHour: number) => {
     saveSchedule(scheduledTasks.filter(st => !(st.taskId === taskId && st.startHour === startHour)));
     toast.success("Task removed from schedule");
+  };
+
+  const openEditDialog = (task: ScheduledTask) => {
+    setEditingTask(task);
+    setSelectedHour(task.startHour.toString());
+    setEditMode(true);
+    setDialogOpen(true);
+  };
+
+  const updateScheduledTask = () => {
+    if (!editingTask) return;
+
+    const newHour = parseInt(selectedHour);
+    const updatedSchedule = scheduledTasks.map(st => 
+      st.taskId === editingTask.taskId && st.startHour === editingTask.startHour
+        ? { ...st, startHour: newHour }
+        : st
+    );
+
+    saveSchedule(updatedSchedule);
+    toast.success("Task rescheduled!");
+    closeDialog();
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setEditMode(false);
+    setEditingTask(null);
+    setSelectedTask("");
+    setSelectedHour("9");
   };
 
   const getTasksForHour = (hour: number) => {
@@ -124,7 +156,10 @@ export const TimeAllocation = ({ tasks }: TimeAllocationProps) => {
               <Clock className="h-5 w-5 text-primary" />
               24-Hour Time Allocation
             </CardTitle>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <Dialog open={dialogOpen} onOpenChange={(open) => {
+              if (!open) closeDialog();
+              else setDialogOpen(open);
+            }}>
               <DialogTrigger asChild>
                 <Button size="sm" className="gap-2">
                   <Plus className="h-4 w-4" />
@@ -133,26 +168,42 @@ export const TimeAllocation = ({ tasks }: TimeAllocationProps) => {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Schedule a Task</DialogTitle>
+                  <DialogTitle>
+                    {editMode ? "Reschedule Task" : "Schedule a Task"}
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4 pt-4">
+                  {!editMode && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Select Task</label>
+                      <Select value={selectedTask} onValueChange={setSelectedTask}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose a task" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {unscheduledTasks.map(task => (
+                            <SelectItem key={task.id} value={task.id}>
+                              {task.title} ({task.timeInMinutes} min)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  
+                  {editMode && editingTask && (
+                    <div className="p-3 rounded-lg bg-secondary/50 border">
+                      <p className="text-sm font-medium">{editingTask.taskTitle}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Duration: {editingTask.duration} minutes
+                      </p>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Select Task</label>
-                    <Select value={selectedTask} onValueChange={setSelectedTask}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose a task" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {unscheduledTasks.map(task => (
-                          <SelectItem key={task.id} value={task.id}>
-                            {task.title} ({task.timeInMinutes} min)
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Start Time (Hour)</label>
+                    <label className="text-sm font-medium">
+                      {editMode ? "New Start Time (Hour)" : "Start Time (Hour)"}
+                    </label>
                     <Select value={selectedHour} onValueChange={setSelectedHour}>
                       <SelectTrigger>
                         <SelectValue />
@@ -166,8 +217,12 @@ export const TimeAllocation = ({ tasks }: TimeAllocationProps) => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button onClick={addTaskToSchedule} className="w-full">
-                    Add to Schedule
+
+                  <Button 
+                    onClick={editMode ? updateScheduledTask : addTaskToSchedule} 
+                    className="w-full"
+                  >
+                    {editMode ? "Update Schedule" : "Add to Schedule"}
                   </Button>
                 </div>
               </DialogContent>
@@ -237,7 +292,8 @@ export const TimeAllocation = ({ tasks }: TimeAllocationProps) => {
                           {tasksInHour.map((task, idx) => (
                             <div
                               key={idx}
-                              className="flex items-start justify-between gap-2 p-2 bg-card rounded border"
+                              className="flex items-start justify-between gap-2 p-2 bg-card rounded border hover:border-primary/50 transition-colors cursor-pointer"
+                              onClick={() => openEditDialog(task)}
                             >
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium truncate">
@@ -246,12 +302,18 @@ export const TimeAllocation = ({ tasks }: TimeAllocationProps) => {
                                 <p className="text-[10px] text-muted-foreground">
                                   {task.startHour.toString().padStart(2, '0')}:00 • {task.duration}min
                                 </p>
+                                <p className="text-[10px] text-primary mt-1">
+                                  Click to reschedule
+                                </p>
                               </div>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-6 w-6 p-0"
-                                onClick={() => removeScheduledTask(task.taskId, task.startHour)}
+                                className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeScheduledTask(task.taskId, task.startHour);
+                                }}
                               >
                                 <X className="h-3 w-3" />
                               </Button>
