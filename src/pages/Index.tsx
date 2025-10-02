@@ -11,6 +11,7 @@ import { MotivationalQuote } from "@/components/MotivationalQuote";
 import { TodayOverview } from "@/components/TodayOverview";
 import { TaskSuggestions } from "@/components/TaskSuggestions";
 import { ProductivityInsights } from "@/components/ProductivityInsights";
+import { TimeAllocation } from "@/components/TimeAllocation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { CalendarCheck2, LayoutDashboard, Calendar, Lightbulb, TrendingUp } from "lucide-react";
@@ -184,6 +185,7 @@ const Index = () => {
 
           <TabsContent value="today" className="space-y-6">
             <TodayOverview />
+            <TimeAllocation tasks={tasks} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <StreakTracker />
               <TaskChart tasks={tasks} />
