@@ -3,6 +3,7 @@ import { TaskForm } from "@/components/TaskForm";
 import { TaskItem } from "@/components/TaskItem";
 import { TaskStats } from "@/components/TaskStats";
 import { TaskChart } from "@/components/TaskChart";
+import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { Navbar } from "@/components/Navbar";
 import { MotivationalBackground } from "@/components/MotivationalBackground";
 import { MotivationalQuote } from "@/components/MotivationalQuote";
@@ -102,7 +103,8 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-6">
+              <PomodoroTimer />
               <TaskForm onAddTask={handleAddTask} />
             </div>
             <div className="lg:col-span-1">
