@@ -44,8 +44,14 @@ All colors MUST be HSL.
     --shadow-card: 0 4px 20px -4px hsl(262 83% 58% / 0.1);
     --shadow-hover: 0 8px 30px -6px hsl(262 83% 58% / 0.15);
     
+    /* 3D Button Shadows */
+    --shadow-3d: 0 4px 6px -1px hsl(var(--primary) / 0.2), 0 2px 4px -1px hsl(var(--primary) / 0.1);
+    --shadow-3d-hover: 0 10px 20px -5px hsl(var(--primary) / 0.3), 0 6px 10px -2px hsl(var(--primary) / 0.2);
+    --shadow-3d-active: 0 2px 4px -1px hsl(var(--primary) / 0.2), inset 0 2px 4px hsl(var(--primary) / 0.1);
+    
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-3d: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     
     --glow-primary: 0 0 20px hsl(262 83% 58% / 0.3);
     --glow-success: 0 0 20px hsl(142 76% 36% / 0.3);
@@ -101,6 +107,11 @@ All colors MUST be HSL.
     
     --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
     --shadow-hover: 0 8px 30px -6px hsl(262 83% 58% / 0.2);
+    
+    /* 3D Button Shadows - Dark Mode */
+    --shadow-3d: 0 4px 6px -1px hsl(var(--primary) / 0.3), 0 2px 4px -1px hsl(var(--primary) / 0.15);
+    --shadow-3d-hover: 0 10px 20px -5px hsl(var(--primary) / 0.4), 0 6px 10px -2px hsl(var(--primary) / 0.25);
+    --shadow-3d-active: 0 2px 4px -1px hsl(var(--primary) / 0.3), inset 0 2px 4px hsl(0 0% 0% / 0.2);
     
     --glow-primary: 0 0 25px hsl(262 83% 58% / 0.4);
     --glow-success: 0 0 25px hsl(142 76% 36% / 0.4);
