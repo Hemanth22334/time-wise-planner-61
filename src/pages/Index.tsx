@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TaskForm } from "@/components/TaskForm";
 import { TaskItem } from "@/components/TaskItem";
 import { TaskStats } from "@/components/TaskStats";
+import { TaskChart } from "@/components/TaskChart";
+import { Navbar } from "@/components/Navbar";
 import { toast } from "sonner";
 import { CalendarCheck2 } from "lucide-react";
 
@@ -14,6 +16,23 @@ interface Task {
 
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  // Load tasks from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("flowtime-tasks");
+    if (stored) {
+      try {
+        setTasks(JSON.parse(stored));
+      } catch (e) {
+        console.error("Failed to parse tasks:", e);
+      }
+    }
+  }, []);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("flowtime-tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleAddTask = (title: string, timeInMinutes: number) => {
     const newTask: Task = {
@@ -48,7 +67,9 @@ const Index = () => {
   const completedTasks = tasks.filter(task => task.completed).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
+      <Navbar />
+      
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-glow-pulse" />
@@ -56,15 +77,12 @@ const Index = () => {
       </div>
       
       <div className="container max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10">
-        <header className="text-center mb-12 space-y-4 animate-fade-in-up">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent mb-4 shadow-lg animate-bounce-in">
-            <CalendarCheck2 className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer bg-[length:200%_auto]">
-            Task Planner
+        <header className="mb-8 animate-fade-in-up">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-2 animate-shimmer bg-[length:200%_auto]">
+            Dashboard
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Plan your day efficiently by allocating time to each task
+          <p className="text-muted-foreground text-lg">
+            Plan your day efficiently with AI-powered time estimation
           </p>
         </header>
 
@@ -78,8 +96,13 @@ const Index = () => {
             />
           </div>
 
-          <div className="animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-            <TaskForm onAddTask={handleAddTask} />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+            <div className="lg:col-span-2">
+              <TaskForm onAddTask={handleAddTask} />
+            </div>
+            <div className="lg:col-span-1">
+              <TaskChart tasks={tasks} />
+            </div>
           </div>
 
           {tasks.length > 0 && (
