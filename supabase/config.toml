@@ -1,0 +1,4 @@
+project_id = "aaooljcgobvnvlwwdris"
+
+[functions.estimate-task-time]
+verify_jwt = false
