@@ -39,7 +39,7 @@ export const MotivationalBackground = () => {
       ))}
 
       {/* Overlay for readability */}
-      <div className="fixed inset-0 bg-gradient-to-br from-background/95 via-background/90 to-background/95 backdrop-blur-sm" style={{ zIndex: -1 }} />
+      <div className="fixed inset-0 bg-gradient-to-br from-background/40 via-background/30 to-background/40" style={{ zIndex: -1 }} />
 
       {/* Animated orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
