@@ -4,6 +4,7 @@ import { TaskItem } from "@/components/TaskItem";
 import { TaskStats } from "@/components/TaskStats";
 import { TaskChart } from "@/components/TaskChart";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
+import { StreakTracker } from "@/components/StreakTracker";
 import { Navbar } from "@/components/Navbar";
 import { MotivationalBackground } from "@/components/MotivationalBackground";
 import { MotivationalQuote } from "@/components/MotivationalQuote";
@@ -58,6 +59,12 @@ const Index = () => {
     ));
     const task = tasks.find(t => t.id === id);
     if (task) {
+      if (!task.completed) {
+        // Task is being marked as complete
+        if ((window as any).recordFlowTimeActivity) {
+          (window as any).recordFlowTimeActivity();
+        }
+      }
       toast.success(task.completed ? "Task marked as incomplete" : "Task completed! Great job!");
     }
   };
@@ -107,7 +114,8 @@ const Index = () => {
               <PomodoroTimer />
               <TaskForm onAddTask={handleAddTask} />
             </div>
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-6">
+              <StreakTracker />
               <TaskChart tasks={tasks} />
             </div>
           </div>

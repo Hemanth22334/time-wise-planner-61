@@ -41,6 +41,11 @@ export const PomodoroTimer = () => {
       const newCount = completedPomodoros + 1;
       setCompletedPomodoros(newCount);
       
+      // Record activity for streak tracking
+      if ((window as any).recordFlowTimeActivity) {
+        (window as any).recordFlowTimeActivity();
+      }
+      
       toast({
         title: "Pomodoro Complete! 🎉",
         description: `Great work! Time for a ${newCount % 4 === 0 ? "long" : "short"} break.`,
