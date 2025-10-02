@@ -4,28 +4,44 @@ import { Card } from "@/components/ui/card";
 
 const quotes = [
   {
-    text: "Time is what we want most, but what we use worst.",
-    author: "William Penn"
+    text: "The ability to perform deep work is becoming increasingly rare and valuable in our economy.",
+    author: "Deep Work Principle"
   },
   {
-    text: "The key is not to prioritize what's on your schedule, but to schedule your priorities.",
-    author: "Stephen Covey"
+    text: "Clarity about what matters provides clarity about what does not.",
+    author: "Deep Work Principle"
   },
   {
-    text: "Productivity is never an accident. It is always the result of a commitment to excellence.",
-    author: "Paul J. Meyer"
+    text: "Focus intensely without distraction on a cognitively demanding task to push your capabilities.",
+    author: "Deep Work Principle"
   },
   {
-    text: "Focus on being productive instead of busy.",
-    author: "Tim Ferriss"
+    text: "Schedule every minute of your day to protect time for what matters most.",
+    author: "Deep Work Principle"
   },
   {
-    text: "You don't have to be great to start, but you have to start to be great.",
-    author: "Zig Ziglar"
+    text: "Embrace boredom and resist the urge to check your phone during idle moments.",
+    author: "Deep Work Principle"
   },
   {
-    text: "Time management is life management.",
-    author: "Robin Sharma"
+    text: "High-quality work produced equals time spent multiplied by intensity of focus.",
+    author: "Deep Work Principle"
+  },
+  {
+    text: "Train your ability to concentrate by eliminating shallow obligations from your schedule.",
+    author: "Deep Work Principle"
+  },
+  {
+    text: "Create rituals and routines to minimize friction when starting important work.",
+    author: "Deep Work Principle"
+  },
+  {
+    text: "Say no to shallow commitments to say yes to deep, meaningful work.",
+    author: "Deep Work Principle"
+  },
+  {
+    text: "Batch shallow tasks together and complete them in designated time blocks.",
+    author: "Deep Work Principle"
   },
 ];
 
