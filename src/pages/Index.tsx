@@ -8,8 +8,12 @@ import { StreakTracker } from "@/components/StreakTracker";
 import { Navbar } from "@/components/Navbar";
 import { MotivationalBackground } from "@/components/MotivationalBackground";
 import { MotivationalQuote } from "@/components/MotivationalQuote";
+import { TodayOverview } from "@/components/TodayOverview";
+import { TaskSuggestions } from "@/components/TaskSuggestions";
+import { ProductivityInsights } from "@/components/ProductivityInsights";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { CalendarCheck2 } from "lucide-react";
+import { CalendarCheck2, LayoutDashboard, Calendar, Lightbulb, TrendingUp } from "lucide-react";
 
 interface Task {
   id: string;
@@ -95,68 +99,118 @@ const Index = () => {
           </p>
         </header>
 
-        <div className="space-y-8">
-          <div className="animate-fade-in">
-            <MotivationalQuote />
-          </div>
+        <Tabs defaultValue="dashboard" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="dashboard" className="gap-2">
+              <LayoutDashboard className="h-4 w-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </TabsTrigger>
+            <TabsTrigger value="today" className="gap-2">
+              <Calendar className="h-4 w-4" />
+              <span className="hidden sm:inline">Today</span>
+            </TabsTrigger>
+            <TabsTrigger value="tips" className="gap-2">
+              <Lightbulb className="h-4 w-4" />
+              <span className="hidden sm:inline">Tips</span>
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="gap-2">
+              <TrendingUp className="h-4 w-4" />
+              <span className="hidden sm:inline">Insights</span>
+            </TabsTrigger>
+          </TabsList>
 
-          <div className="animate-slide-in-right">
-            <TaskStats
-              totalTasks={tasks.length}
-              completedTasks={completedTasks}
-              totalTimeMinutes={totalTimeMinutes}
-              remainingTimeMinutes={remainingTimeMinutes}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-            <div className="lg:col-span-2 space-y-6">
-              <PomodoroTimer />
-              <TaskForm onAddTask={handleAddTask} />
+          <TabsContent value="dashboard" className="space-y-8">
+            <div className="animate-fade-in">
+              <MotivationalQuote />
             </div>
-            <div className="lg:col-span-1 space-y-6">
+
+            <div className="animate-slide-in-right">
+              <TaskStats
+                totalTasks={tasks.length}
+                completedTasks={completedTasks}
+                totalTimeMinutes={totalTimeMinutes}
+                remainingTimeMinutes={remainingTimeMinutes}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+              <div className="lg:col-span-2 space-y-6">
+                <PomodoroTimer />
+                <TaskForm onAddTask={handleAddTask} />
+              </div>
+              <div className="lg:col-span-1 space-y-6">
+                <StreakTracker />
+                <TaskChart tasks={tasks} />
+              </div>
+            </div>
+
+            {tasks.length > 0 && (
+              <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+                <h2 className="text-2xl font-semibold flex items-center gap-2">
+                  <span className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
+                  Your Tasks
+                </h2>
+                <div className="space-y-3">
+                  {tasks.map((task, index) => (
+                    <div 
+                      key={task.id}
+                      className="animate-scale-in"
+                      style={{ 
+                        animationDelay: `${0.1 * index}s`,
+                        animationFillMode: 'both'
+                      }}
+                    >
+                      <TaskItem
+                        {...task}
+                        onToggle={handleToggleTask}
+                        onDelete={handleDeleteTask}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {tasks.length === 0 && (
+              <div className="text-center py-16 space-y-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary text-muted-foreground mb-4 animate-bounce-in">
+                  <CalendarCheck2 className="h-10 w-10" />
+                </div>
+                <h3 className="text-xl font-semibold text-muted-foreground">No tasks yet</h3>
+                <p className="text-muted-foreground">Add your first task to get started!</p>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="today" className="space-y-6">
+            <TodayOverview />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <StreakTracker />
               <TaskChart tasks={tasks} />
             </div>
-          </div>
+          </TabsContent>
 
-          {tasks.length > 0 && (
-            <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-              <h2 className="text-2xl font-semibold flex items-center gap-2">
-                <span className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
-                Your Tasks
-              </h2>
-              <div className="space-y-3">
-                {tasks.map((task, index) => (
-                  <div 
-                    key={task.id}
-                    className="animate-scale-in"
-                    style={{ 
-                      animationDelay: `${0.1 * index}s`,
-                      animationFillMode: 'both'
-                    }}
-                  >
-                    <TaskItem
-                      {...task}
-                      onToggle={handleToggleTask}
-                      onDelete={handleDeleteTask}
-                    />
-                  </div>
-                ))}
-              </div>
+          <TabsContent value="tips" className="space-y-6">
+            <TaskSuggestions />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <PomodoroTimer />
+              <TaskChart tasks={tasks} />
             </div>
-          )}
+          </TabsContent>
 
-          {tasks.length === 0 && (
-            <div className="text-center py-16 space-y-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary text-muted-foreground mb-4 animate-bounce-in">
-                <CalendarCheck2 className="h-10 w-10" />
-              </div>
-              <h3 className="text-xl font-semibold text-muted-foreground">No tasks yet</h3>
-              <p className="text-muted-foreground">Add your first task to get started!</p>
+          <TabsContent value="insights" className="space-y-6">
+            <ProductivityInsights tasks={tasks} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <StreakTracker />
+              <TaskStats
+                totalTasks={tasks.length}
+                completedTasks={completedTasks}
+                totalTimeMinutes={totalTimeMinutes}
+                remainingTimeMinutes={remainingTimeMinutes}
+              />
             </div>
-          )}
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
